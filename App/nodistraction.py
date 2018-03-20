@@ -1,9 +1,9 @@
 import schedule
 import time
+
+
+import time
 from datetime import datetime as dt
-
-
-
 hosts_temp="hosts"
 hosts_path=r"/etc/hosts"
 redirect="127.0.0.1"
