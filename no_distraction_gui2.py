@@ -10,7 +10,7 @@ qtCreatorFile = "GUI.ui" # Enter file here.
 hosts_temp="hosts"
 hosts_path=r"/etc/hosts"
 redirect="127.0.0.1"
-website_list=["blitz.bg"]
+website_list=[]
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
@@ -20,23 +20,15 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
-        #self.setTime.clicked.connect(self.getText)
-        self.setTime.clicked.connect(self.setSchedule)
         self.startButton.clicked.connect(self.setSchedule)
-
-    # def startSchedule(self, setSchedule):
-    #     schedule.every().day.at(choose_start).do(self.turn_on)
-    #     schedule.every().day.at(choose_end).do(self.turn_off)
-    #     while True:
-    #         schedule.run_pending()
-    #         time.sleep(1)
-
-    def getText(self):
-        text, okPressed = QInputDialog.getText(self, "Get text","Add one website:", QLineEdit.Normal, "")
-        if okPressed and text != '':
-            website_list.append(text)
+        self.addButton.clicked.connect(self.addInputTextToListbox)
 
 
+    def addInputTextToListbox(self):
+        txt = self.inputWebsite.text()
+        self.listWidget.addItem(txt)
+        website_list.append(txt)
+        print(website_list)
 
     def setSchedule(self):
 
@@ -85,11 +77,6 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         print("Unblocked everything")
 
 
-    # schedule.every().day.at(choose_start).do(self.turn_on)
-    # schedule.every().day.at(choose_end).do(self.turn_off)
-    # while True:
-    #     schedule.run_pending()
-    #     time.sleep(1)
 
 
 

@@ -24,7 +24,6 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setTime.clicked.connect(self.setSchedule)
         self.startButton.clicked.connect(self.startSchedule)
 
-
     def startSchedule(self):
         schedule.run_pending()
         time.sleep(1)
@@ -34,34 +33,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         if okPressed and text != '':
             website_list.append(text)
 
-#Let the user choose the timeframe for an information cycle
-    def turn_on(self):
-        with open(hosts_path,'r+') as file:
-            content=file.read()
-            print(content)
 
-            for website in website_list:
-                if website in content:
-                    pass
-                else:
-                    file.write(redirect+" "+website+"\n")
-                    if website.startswith('www.'): #We're adding www where needed
-                        temp = website.split('www.')[1]
-                        file.write(redirect+" " + temp + "\n")
-                    else:
-                        file.write(redirect+" " + "www." + website + "\n")
-                    print("Blocked website")
-    ###Turn off the blocker
-    def turn_off(self):
-        print("Unblocking everything")
-        with open(hosts_path,'r+')as file:
-            content=file.readlines()
-            file.seek(0) #Starts reading at the first character
-            for line in content:
-                if not any(website in line for website in website_list):
-                    file.write(line)
-            file.truncate() #Imame golqm problem s mahaneto na failove ot hosts - maha samo chast ot tqh
-        print("Unblocked everything")
+
 
 
     def setSchedule(self):
@@ -70,15 +43,47 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         choose_start = choose_s.toString()
         choose_start = choose_start[:-3]
 
-
         choose_e = self.timeEnd.time()
         choose_end = choose_e.toString()
-        choose_send = choose_end[:-3]
+        choose_end = choose_end[:-3]
+
+
+        print(choose_end)
+
+        def turn_on(self):
+            with open(hosts_path,'r+') as file:
+                content=file.read()
+                print(content)
+
+                for website in website_list:
+                    if website in content:
+                        pass
+                    else:
+                        file.write(redirect+" "+website+"\n")
+                        if website.startswith('www.'): #We're adding www where needed
+                            temp = website.split('www.')[1]
+                            file.write(redirect+" " + temp + "\n")
+                        else:
+                            file.write(redirect+" " + "www." + website + "\n")
+                        print("Blocked website")
+        ###Turn off the blocker
+        def turn_off(self):
+            print("Unblocking everything")
+            with open(hosts_path,'r+')as file:
+                content=file.readlines()
+                file.seek(0) #Starts reading at the first character
+                for line in content:
+                    if not any(website in line for website in website_list):
+                        file.write(line)
+                file.truncate() #Imame golqm problem s mahaneto na failove ot hosts - maha samo chast ot tqh
+            print("Unblocked everything")
 
         schedule.every().day.at(choose_start).do(turn_on)
         schedule.every().day.at(choose_end).do(turn_off)
 
-
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
 
 
 if __name__ == "__main__":
