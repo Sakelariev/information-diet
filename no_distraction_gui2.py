@@ -22,11 +22,14 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         #self.setTime.clicked.connect(self.getText)
         self.setTime.clicked.connect(self.setSchedule)
-        self.startButton.clicked.connect(self.startSchedule)
+        self.startButton.clicked.connect(self.setSchedule)
 
-    def startSchedule(self):
-        schedule.run_pending()
-        time.sleep(1)
+    # def startSchedule(self, setSchedule):
+    #     schedule.every().day.at(choose_start).do(self.turn_on)
+    #     schedule.every().day.at(choose_end).do(self.turn_off)
+    #     while True:
+    #         schedule.run_pending()
+    #         time.sleep(1)
 
     def getText(self):
         text, okPressed = QInputDialog.getText(self, "Get text","Add one website:", QLineEdit.Normal, "")
@@ -46,7 +49,12 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         choose_end = choose_end[:-3]
         print(choose_end)
 
-        return choose_start, choose_end
+
+        schedule.every().day.at(choose_start).do(self.turn_on)
+        schedule.every().day.at(choose_end).do(self.turn_off)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
 
     def turn_on(self):
         with open(hosts_path,'r+') as file:
@@ -77,11 +85,11 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         print("Unblocked everything")
 
 
-    schedule.every().day.at(choose_start).do(self.turn_on)
-    schedule.every().day.at(choose_end).do(self.turn_off)
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    # schedule.every().day.at(choose_start).do(self.turn_on)
+    # schedule.every().day.at(choose_end).do(self.turn_off)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
 
 
 
