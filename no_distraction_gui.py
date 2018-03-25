@@ -26,6 +26,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.startButton.clicked.connect(self.setSchedule)
         self.addButton.clicked.connect(self.addInputTextToListbox)
+        self.inputWebsite.returnPressed.connect(self.addButton.click)
         #self.startButton.clicked.connect(self.close) #Close the application after start is clicked
         #self.ui.startButton.clicked.connect(self.closeIt)
 
@@ -35,6 +36,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def addInputTextToListbox(self):
         txt = self.inputWebsite.text()
         self.listWidget.addItem(txt)
+        self.inputWebsite.clear()
         website_list.append(txt)
         print(website_list)
 
