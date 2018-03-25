@@ -1,17 +1,14 @@
 import os, sys
+import schedule
+import time
+from datetime import datetime as dt
+import no_distraction_gui2 as distraction
 
 
-def closeFile():
-    try:
-        os.close("/Applications/Safari.app")
-        print("App opened successfully!")
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
 
-
-def openFile():
-    try:
-        fd = os.open( "/Applications/Safari.app", os.O_RDWR|os.O_CREAT )
-        print("App opened successfully!")
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
+def setSchedule(self):
+    schedule.every().day.at("20:40").do(distraction.turn_on)
+    schedule.every().day.at("20:41").do(distraction.turn_off)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import (QWidget, QSlider, QLabel, QGridLayout, QVBoxLayout,
 
 import schedule
 import time
+import on_and_off as brada
 from datetime import datetime as dt
 
 qtCreatorFile = "GUI.ui" # Enter file here.
@@ -20,7 +21,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
-        self.startButton.clicked.connect(self.setSchedule)
+        self.startButton.clicked.connect(brada.setSchedule)
         self.addButton.clicked.connect(self.addInputTextToListbox)
         #self.startButton.clicked.connect(self.close) #Close the application after start is clicked
         #self.ui.startButton.clicked.connect(self.closeIt)
@@ -34,52 +35,94 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         website_list.append(txt)
         print(website_list)
 
-    def setSchedule(self):
-
+    def chooseStart(self):
         choose_s = self.timeBegin.time()
         choose_start = choose_s.toString()
         choose_start = choose_start[:-3]
-        print(choose_start)
+        return choose_start
+
+
+    def chooseEnd(self):
         choose_e = self.timeEnd.time()
         choose_end = choose_e.toString()
         choose_end = choose_end[:-3]
-        print(choose_end)
+        return choose_end
 
 
-        schedule.every().day.at(choose_start).do(self.turn_on)
-        schedule.every().day.at(choose_end).do(self.turn_off)
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
 
-    def turn_on(self):
-        with open(hosts_path,'r+') as file:
-            content=file.read()
-            print(content)
+    # def setSchedule(self):
+    #
+    #     choose_s = self.timeBegin.time()
+    #     choose_start = choose_s.toString()
+    #     choose_start = choose_start[:-3]
+    #     print(choose_start)
+    #     choose_e = self.timeEnd.time()
+    #     choose_end = choose_e.toString()
+    #     choose_end = choose_end[:-3]
+    #     print(choose_end)
+    #
+    #
+    #     schedule.every().day.at(choose_start).do(self.turn_on)
+    #     schedule.every().day.at(choose_end).do(self.turn_off)
+    #     while True:
+    #         schedule.run_pending()
+    #         time.sleep(1)
+    #
+    # def turn_on(self):
+    #     with open(hosts_path,'r+') as file:
+    #         content=file.read()
+    #         print(content)
+    #
+    #         for website in website_list:
+    #             if website in content:
+    #                 pass
+    #             else:
+    #                 file.write(redirect+" "+website+"\n")
+    #                 if website.startswith('www.'): #We're adding www where needed
+    #                     temp = website.split('www.')[1]
+    #                     file.write(redirect+" " + temp + "\n")
+    #                 else:
+    #                     file.write(redirect+" " + "www." + website + "\n")
+    #                 print("Blocked website")
+    #     ###Turn off the blocker
+    # def turn_off(self):
+    #     print("Unblocking everything")
+    #     with open(hosts_path,'r+')as file:
+    #         content=file.readlines()
+    #         file.seek(0) #Starts reading at the first character
+    #         for line in content:
+    #             if not any(website in line for website in website_list):
+    #                 file.write(line)
+    #         file.truncate() #Imame golqm problem s mahaneto na failove ot hosts - maha samo chast ot tqh
+    #     print("Unblocked everything")
 
-            for website in website_list:
-                if website in content:
-                    pass
+def turn_on():
+    with open(hosts_path,'r+') as file:
+        content=file.read()
+        print(content)
+
+        for website in website_list:
+            if website in content:
+                pass
+            else:
+                file.write(redirect+" "+website+"\n")
+                if website.startswith('www.'): #We're adding www where needed
+                    temp = website.split('www.')[1]
+                    file.write(redirect+" " + temp + "\n")
                 else:
-                    file.write(redirect+" "+website+"\n")
-                    if website.startswith('www.'): #We're adding www where needed
-                        temp = website.split('www.')[1]
-                        file.write(redirect+" " + temp + "\n")
-                    else:
-                        file.write(redirect+" " + "www." + website + "\n")
-                    print("Blocked website")
-        ###Turn off the blocker
-    def turn_off(self):
-        print("Unblocking everything")
-        with open(hosts_path,'r+')as file:
-            content=file.readlines()
-            file.seek(0) #Starts reading at the first character
-            for line in content:
-                if not any(website in line for website in website_list):
-                    file.write(line)
-            file.truncate() #Imame golqm problem s mahaneto na failove ot hosts - maha samo chast ot tqh
-        print("Unblocked everything")
-
+                    file.write(redirect+" " + "www." + website + "\n")
+                print("Blocked website")
+    ###Turn off the blocker
+def turn_off():
+    print("Unblocking everything")
+    with open(hosts_path,'r+')as file:
+        content=file.readlines()
+        file.seek(0) #Starts reading at the first character
+        for line in content:
+            if not any(website in line for website in website_list):
+                file.write(line)
+        file.truncate() #Imame golqm problem s mahaneto na failove ot hosts - maha samo chast ot tqh
+    print("Unblocked everything")
 
 
 
