@@ -8,7 +8,7 @@ from datetime import datetime as dt
 import threading
 
 
-qtCreatorFile = "GUI.ui" # Enter file here.
+qtCreatorFile = "GUI-2.ui" # Enter file here.
 hosts_temp="hosts"
 hosts_path=r"/etc/hosts"
 redirect="127.0.0.1"
@@ -35,7 +35,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     #     self.close()
 
     def removeWebsite(self):
-        website_list.remove(self.listWidget)
+        website_list.pop()
         self.listWidget.takeItem(self.listWidget.currentRow())
 
 
