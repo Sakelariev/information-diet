@@ -27,11 +27,17 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.startButton.clicked.connect(self.setSchedule)
         self.addButton.clicked.connect(self.addInputTextToListbox)
         self.inputWebsite.returnPressed.connect(self.addButton.click)
+        self.removeButton.clicked.connect(self.removeWebsite)
         #self.startButton.clicked.connect(self.close) #Close the application after start is clicked
         #self.ui.startButton.clicked.connect(self.closeIt)
 
-    def closeIt(self):
-        self.close()
+    # def closeIt(self):
+    #     self.close()
+
+    def removeWebsite(self):
+        website_list.remove(self.listWidget)
+        self.listWidget.takeItem(self.listWidget.currentRow())
+
 
     def addInputTextToListbox(self):
         txt = self.inputWebsite.text()
