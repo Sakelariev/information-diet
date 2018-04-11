@@ -5,36 +5,64 @@ from PyQt5.QtWidgets import (QWidget, QSlider, QLabel, QGridLayout, QVBoxLayout,
 import schedule
 import time
 from datetime import datetime as dt
+import threading
 
-qtCreatorFile = "GUI.ui" # Enter file here.
+
+qtCreatorFile = "GUI-2.ui" # Enter file here.
 hosts_temp="hosts"
 hosts_path=r"/etc/hosts"
 redirect="127.0.0.1"
-website_list=["blitz.bg"]
+website_list=[]
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
 class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
+
+
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
-        #self.setTime.clicked.connect(self.getText)
-        self.setTime.clicked.connect(self.setSchedule)
-        self.startButton.clicked.connect(self.startSchedule)
+        self.startButton.clicked.connect(self.setSchedule)
+        self.addButton.clicked.connect(self.addInputTextToListbox)
+        self.inputWebsite.returnPressed.connect(self.addButton.click)
+        self.removeButton.clicked.connect(self.removeWebsite)
+        #self.startButton.clicked.connect(self.close) #Close the application after start is clicked
+        #self.ui.startButton.clicked.connect(self.closeIt)
+
+    # def closeIt(self):
+    #     self.close()
+
+    def removeWebsite(self):
+        website_list.pop()
+        self.listWidget.takeItem(self.listWidget.currentRow())
 
 
-    def startSchedule(self):
-        schedule.run_pending()
-        time.sleep(1)
+    def addInputTextToListbox(self):
+        txt = self.inputWebsite.text()
+        self.listWidget.addItem(txt)
+        self.inputWebsite.clear()
+        website_list.append(txt)
+        print(website_list)
 
-    def getText(self):
-        text, okPressed = QInputDialog.getText(self, "Get text","Add one website:", QLineEdit.Normal, "")
-        if okPressed and text != '':
-            website_list.append(text)
+    def setSchedule(self):
 
-#Let the user choose the timeframe for an information cycle
+        choose_s = self.timeBegin.time()
+        choose_start = choose_s.toString()
+        choose_start = choose_start[:-3]
+        print(choose_start)
+        choose_e = self.timeEnd.time()
+        choose_end = choose_e.toString()
+        choose_end = choose_end[:-3]
+        print(choose_end)
+
+
+        schedule.every().day.at(choose_start).do(self.turn_on)
+        schedule.every().day.at(choose_end).do(self.turn_off)
+        ScheduleThread().start()
+
+
     def turn_on(self):
         with open(hosts_path,'r+') as file:
             content=file.read()
@@ -51,7 +79,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
                     else:
                         file.write(redirect+" " + "www." + website + "\n")
                     print("Blocked website")
-    ###Turn off the blocker
+        ###Turn off the blocker
     def turn_off(self):
         print("Unblocking everything")
         with open(hosts_path,'r+')as file:
@@ -64,19 +92,14 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         print("Unblocked everything")
 
 
-    def setSchedule(self):
+class ScheduleThread(threading.Thread):
+    def __init__(self, *pargs, **kwargs):
+        super().__init__(*pargs, daemon=True, name="scheduler", **kwargs)
 
-        choose_s = self.timeBegin.time()
-        choose_start = choose_s.toString()
-        choose_start = choose_start[:-3]
-
-
-        choose_e = self.timeEnd.time()
-        choose_end = choose_e.toString()
-        choose_send = choose_end[:-3]
-
-        schedule.every().day.at(choose_start).do(turn_on)
-        schedule.every().day.at(choose_end).do(turn_off)
+    def run(self):
+        while True:
+            schedule.run_pending()
+            time.sleep(schedule.idle_seconds())
 
 
 

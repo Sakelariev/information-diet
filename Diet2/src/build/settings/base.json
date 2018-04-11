@@ -1,0 +1,5 @@
+{
+    "app_name": "DeepZone",
+    "main_module": "src/main/python/deepzone/main.py",
+    "author": "Ivaylo Sakelariev"
+}
